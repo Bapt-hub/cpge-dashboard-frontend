@@ -1,26 +1,43 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F5FAFF;
+  --foreground: #16324F;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Palette inspirée de Solly : bleu ciel doux, encre bleutée, une touche ambre */
+  --color-sky: #4FA8E8;
+  --color-sky-soft: #DCF0FF;
+  --color-sky-deep: #1D6FB8;
+  --color-ink: #16324F;
+  --color-ink-soft: #5B7A99;
+  --color-amber: #FFB03B;
+  --color-amber-soft: #FFEACB;
+  --color-mint: #2FBE8F;
+
+  --font-sans: var(--font-nunito);
+  --font-heading: var(--font-baloo);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3, .font-heading {
+  font-family: var(--font-heading), var(--font-sans), sans-serif;
+}
+
+/* Petits nuages décoratifs façon Solly, en fond de page */
+.cloud-field {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
 }
