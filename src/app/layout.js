@@ -33,8 +33,8 @@ export default function RootLayout({ children }) {
 
               {/* Logo / Retour à l'accueil */}
               <Link href="/" className="flex items-center gap-2 font-heading text-xl font-bold text-sky-deep">
-                <span className="grid place-items-center w-9 h-9 rounded-full bg-sky text-white text-sm">PR</span>
-                PrépaRation
+                <span className="grid place-items-center w-9 h-9 rounded-full bg-sky text-white text-sm">PD</span>
+                PrépaDash
               </Link>
 
               {/* Liens de navigation */}
@@ -44,6 +44,12 @@ export default function RootLayout({ children }) {
                 </Link>
                 <Link href="/notes" className="px-3 py-2 rounded-full text-ink-soft hover:text-sky-deep hover:bg-sky-soft font-semibold transition-colors">
                   Notes & DM
+                </Link>
+                <Link href="/calculateur" className="px-3 py-2 rounded-full text-ink-soft hover:text-sky-deep hover:bg-sky-soft font-semibold transition-colors">
+                  Calculateur
+                </Link>
+                <Link href="/planning" className="px-3 py-2 rounded-full text-ink-soft hover:text-sky-deep hover:bg-sky-soft font-semibold transition-colors">
+                  Planning
                 </Link>
                 <Link href="/scei" className="px-3 py-2 rounded-full text-ink-soft hover:text-sky-deep hover:bg-sky-soft font-semibold transition-colors">
                   Annuaire SCEI
