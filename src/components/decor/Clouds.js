@@ -14,10 +14,10 @@ function Cloud({ className }) {
 
 export default function Clouds() {
   return (
-    <div className="cloud-field text-white/60">
-      <Cloud className="absolute -top-2 left-[8%] w-28 opacity-70" />
-      <Cloud className="absolute top-10 right-[12%] w-40 opacity-50" />
-      <Cloud className="absolute top-[38%] left-[45%] w-24 opacity-40" />
+    <div className="cloud-field">
+      <Cloud className="absolute -top-2 left-[8%] w-28 opacity-70 text-white/60" />
+      <Cloud className="absolute top-10 right-[12%] w-40 opacity-50 text-violet-soft/70" />
+      <Cloud className="absolute top-[38%] left-[45%] w-24 opacity-40 text-white/60" />
     </div>
   );
 }

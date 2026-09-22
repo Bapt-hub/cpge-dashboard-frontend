@@ -2,16 +2,21 @@
 'use client';
 
 import { useState } from 'react';
-import { FILIERES, FILIERES_LISTE } from '@/data/filieres';
+import Link from 'next/link';
+import { useNotes } from '@/context/NotesContext';
+import { useProfile } from '@/context/ProfileContext';
+import { FILIERES } from '@/data/filieres';
+
+const TYPE_COULEUR = {
+  DS: 'bg-sky-soft text-sky-deep',
+  DM: 'bg-violet-soft text-violet',
+  Colle: 'bg-coral-soft text-coral',
+};
 
 export default function NotesPage() {
-  const [filiere, setFiliere] = useState('MPSI');
-  const matieresFiliere = FILIERES[filiere].matieres;
-
-  const [notes, setNotes] = useState([
-    { id: 1, date: '2026-10-24', matiere: 'Physique', type: 'DS', note: 14.5, coef: 5, moyClasse: 11.2 },
-    { id: 2, date: '2026-10-18', matiere: 'Mathématiques', type: 'Colle', note: 16.0, coef: 6, moyClasse: null },
-  ]);
+  const { notes, ajouterNote, supprimerNote, moyenneGenerale } = useNotes();
+  const { profil } = useProfile();
+  const matieresFiliere = FILIERES[profil.filiere].matieres;
 
   const [form, setForm] = useState({
     date: '',
@@ -26,28 +31,19 @@ export default function NotesPage() {
     return m ? m.coef : 1;
   }
 
-  function ajouterNote(e) {
+  function soumettre(e) {
     e.preventDefault();
     if (!form.date || form.note === '') return;
-    setNotes([
-      {
-        id: Date.now(),
-        date: form.date,
-        matiere: form.matiere,
-        type: form.type,
-        note: parseFloat(form.note),
-        coef: coefFor(form.matiere),
-        moyClasse: form.moyClasse ? parseFloat(form.moyClasse) : null,
-      },
-      ...notes,
-    ]);
+    ajouterNote({
+      date: form.date,
+      matiere: form.matiere,
+      type: form.type,
+      note: parseFloat(form.note),
+      coef: coefFor(form.matiere),
+      moyClasse: form.moyClasse ? parseFloat(form.moyClasse) : null,
+    });
     setForm({ ...form, date: '', note: '', moyClasse: '' });
   }
-
-  const totalCoef = notes.reduce((s, n) => s + n.coef, 0);
-  const moyennePonderee = totalCoef
-    ? (notes.reduce((s, n) => s + n.note * n.coef, 0) / totalCoef).toFixed(2)
-    : '-';
 
   return (
     <main className="min-h-screen bg-background p-8">
@@ -56,31 +52,18 @@ export default function NotesPage() {
         <div className="flex flex-wrap justify-between items-center gap-4 mb-8">
           <div>
             <h1 className="font-heading text-3xl font-extrabold text-ink">Mes notes & DM</h1>
-            <p className="text-ink-soft mt-1">Coefficients calés sur ta filière.</p>
+            <p className="text-ink-soft mt-1">
+              Filière {FILIERES[profil.filiere].label} — <Link href="/profil" className="underline hover:text-sky-deep">changer depuis mon profil</Link>
+            </p>
           </div>
 
-          <div className="flex items-center gap-4">
-            <select
-              value={filiere}
-              onChange={(e) => {
-                setFiliere(e.target.value);
-                setForm((f) => ({ ...f, matiere: FILIERES[e.target.value].matieres[0].nom }));
-              }}
-              className="px-4 py-2 rounded-full border border-sky-soft bg-white font-semibold text-ink-soft"
-            >
-              {FILIERES_LISTE.map((f) => (
-                <option key={f} value={f}>{FILIERES[f].label}</option>
-              ))}
-            </select>
-
-            <div className="px-5 py-2 rounded-full bg-sky text-white font-bold">
-              Moyenne pondérée : {moyennePonderee} / 20
-            </div>
+          <div className="px-5 py-2 rounded-full bg-gradient-to-r from-sky to-violet text-white font-bold">
+            Moyenne pondérée : {moyenneGenerale ? moyenneGenerale.toFixed(2) : '-'} / 20
           </div>
         </div>
 
         {/* Formulaire d'ajout */}
-        <form onSubmit={ajouterNote} className="grid grid-cols-2 md:grid-cols-6 gap-3 p-6 rounded-3xl bg-white border border-sky-soft shadow-[0_8px_24px_-12px_rgba(79,168,232,0.35)] mb-8">
+        <form onSubmit={soumettre} className="grid grid-cols-2 md:grid-cols-6 gap-3 p-6 rounded-3xl bg-white border border-sky-soft shadow-[0_8px_24px_-12px_rgba(79,168,232,0.35)] mb-8">
           <input
             type="date"
             required
@@ -134,6 +117,7 @@ export default function NotesPage() {
                 <th className="p-4 font-bold text-ink-soft text-right">Coef</th>
                 <th className="p-4 font-bold text-ink-soft text-right">Note</th>
                 <th className="p-4 font-bold text-ink-soft text-right">Moy. classe</th>
+                <th className="p-4"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-sky-soft">
@@ -141,12 +125,20 @@ export default function NotesPage() {
                 <tr key={n.id} className="hover:bg-sky-soft/40 transition-colors">
                   <td className="p-4">{n.date}</td>
                   <td className="p-4 font-bold text-sky-deep">{n.matiere}</td>
-                  <td className="p-4">{n.type}</td>
+                  <td className="p-4">
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${TYPE_COULEUR[n.type] ?? 'bg-sky-soft text-sky-deep'}`}>{n.type}</span>
+                  </td>
                   <td className="p-4 text-right text-ink-soft">{n.coef}</td>
                   <td className="p-4 text-right font-bold text-xl">{n.note.toFixed(1)} / 20</td>
                   <td className="p-4 text-right text-ink-soft">{n.moyClasse ?? '-'}</td>
+                  <td className="p-4 text-right">
+                    <button onClick={() => supprimerNote(n.id)} className="text-ink-soft hover:text-rose-500 transition-colors" title="Supprimer">✕</button>
+                  </td>
                 </tr>
               ))}
+              {notes.length === 0 && (
+                <tr><td colSpan={7} className="p-6 text-center text-ink-soft">Aucune note enregistrée pour l'instant.</td></tr>
+              )}
             </tbody>
           </table>
         </div>

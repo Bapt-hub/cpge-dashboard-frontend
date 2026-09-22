@@ -1,14 +1,22 @@
 // Fichier : src/app/premium/objectifs/page.js
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SCEI_ECOLES } from '@/data/scei';
+import PremiumGate from '@/components/PremiumGate';
+import { useNotes } from '@/context/NotesContext';
 
 export default function ObjectifsPage() {
+  const { moyenneGenerale, totalCoef: totalCoefNotes } = useNotes();
   const [ecoleNom, setEcoleNom] = useState(SCEI_ECOLES[0].ecole);
   const [moyenneActuelle, setMoyenneActuelle] = useState('');
   const [coefDejaFait, setCoefDejaFait] = useState('');
   const [coefRestant, setCoefRestant] = useState('');
+
+  useEffect(() => {
+    if (moyenneGenerale) setMoyenneActuelle(moyenneGenerale.toFixed(2));
+    if (totalCoefNotes) setCoefDejaFait(String(totalCoefNotes));
+  }, [moyenneGenerale, totalCoefNotes]);
 
   const ecole = SCEI_ECOLES.find((e) => e.ecole === ecoleNom);
 
@@ -32,6 +40,7 @@ export default function ObjectifsPage() {
           <p className="text-ink-soft mt-1">Simule la moyenne à viser sur tes épreuves restantes pour atteindre le seuil d'admissibilité.</p>
         </div>
 
+        <PremiumGate titre="Débloque le planificateur d'objectifs">
         <div className="p-6 rounded-3xl bg-white border border-sky-soft shadow-[0_8px_24px_-12px_rgba(79,168,232,0.35)] space-y-4">
           <select
             value={ecoleNom}
@@ -66,7 +75,7 @@ export default function ObjectifsPage() {
         </div>
 
         {noteNecessaire !== null && (
-          <div className="mt-6 p-6 rounded-3xl bg-amber-soft border-2 border-amber text-center">
+          <div className="mt-6 p-6 rounded-3xl bg-violet-soft border-2 border-violet text-center">
             <p className="text-sm font-bold text-ink-soft">Moyenne à viser sur les épreuves restantes</p>
             <p className="font-heading text-5xl font-extrabold text-ink mt-1">
               {noteNecessaire > 20 ? '> 20' : noteNecessaire < 0 ? 'déjà acquis' : `${noteNecessaire.toFixed(1)} / 20`}
@@ -76,6 +85,7 @@ export default function ObjectifsPage() {
             )}
           </div>
         )}
+        </PremiumGate>
 
         <p className="text-xs text-ink-soft mt-4 text-center">
           Simulation indicative basée sur le seuil d'admissibilité {ecole.anneeRef} de l'école. Les seuils varient chaque année.

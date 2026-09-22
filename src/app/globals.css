@@ -18,6 +18,11 @@
   --color-amber: #FFB03B;
   --color-amber-soft: #FFEACB;
   --color-mint: #2FBE8F;
+  --color-mint-soft: #D9F5EA;
+  --color-coral: #FF6F5E;
+  --color-coral-soft: #FFE1DC;
+  --color-violet: #8C7AE6;
+  --color-violet-soft: #E8E3FB;
 
   --font-sans: var(--font-nunito);
   --font-heading: var(--font-baloo);
@@ -40,4 +45,14 @@ h1, h2, h3, .font-heading {
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
+}
+
+/* Impression du bulletin : on masque tout ce qui n'est pas le document */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
 }

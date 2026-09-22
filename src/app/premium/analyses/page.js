@@ -5,6 +5,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
 } from 'recharts';
+import PremiumGate from '@/components/PremiumGate';
 
 const PERF_PAR_MATIERE = [
   { matiere: 'Maths', moi: 14.2, concours: 12.5 },
@@ -27,6 +28,7 @@ export default function AnalysesPage() {
           <p className="text-ink-soft mt-1">Tes performances par matière face à la moyenne des admis au concours visé.</p>
         </div>
 
+        <PremiumGate titre="Débloque les analyses graphiques avancées">
         <div className="p-6 rounded-3xl bg-white border border-sky-soft shadow-[0_8px_24px_-12px_rgba(79,168,232,0.35)] mb-6">
           <h2 className="font-heading font-bold text-ink mb-4">Moi vs. moyenne des admis</h2>
           <div className="h-72">
@@ -56,6 +58,7 @@ export default function AnalysesPage() {
             </ResponsiveContainer>
           </div>
         </div>
+        </PremiumGate>
       </div>
     </main>
   );

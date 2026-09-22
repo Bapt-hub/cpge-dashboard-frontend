@@ -1,8 +1,10 @@
 // Fichier : src/app/premium/probabilites/page.js
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SCEI_ECOLES } from '@/data/scei';
+import PremiumGate from '@/components/PremiumGate';
+import { useNotes } from '@/context/NotesContext';
 
 // Modèle simplifié : probabilité logistique autour du seuil d'admissibilité historique.
 // Écart de +2 pts au-dessus du seuil ≈ très probable ; -2 pts en dessous ≈ improbable.
@@ -19,8 +21,13 @@ function couleur(p) {
 }
 
 export default function ProbabilitesPage() {
+  const { moyenneGenerale } = useNotes();
   const [ecoleNom, setEcoleNom] = useState(SCEI_ECOLES[0].ecole);
   const [moyenne, setMoyenne] = useState('');
+
+  useEffect(() => {
+    if (moyenneGenerale) setMoyenne(moyenneGenerale.toFixed(2));
+  }, [moyenneGenerale]);
 
   const ecole = SCEI_ECOLES.find((e) => e.ecole === ecoleNom);
   const val = parseFloat(moyenne);
@@ -36,6 +43,7 @@ export default function ProbabilitesPage() {
           <p className="text-ink-soft mt-1">Modèle croisant ta moyenne et le seuil historique SCEI de l'école visée.</p>
         </div>
 
+        <PremiumGate titre="Débloque la probabilité d'admissibilité">
         <div className="p-6 rounded-3xl bg-white border border-sky-soft shadow-[0_8px_24px_-12px_rgba(79,168,232,0.35)] space-y-4">
           <select
             value={ecoleNom}
@@ -65,6 +73,7 @@ export default function ProbabilitesPage() {
             <p className="font-heading text-5xl font-extrabold mt-1">{proba} %</p>
           </div>
         )}
+        </PremiumGate>
 
         <p className="text-xs text-ink-soft mt-4 text-center">
           Estimation indicative basée sur les données SCEI historiques. Ne remplace pas les résultats réels du concours.
